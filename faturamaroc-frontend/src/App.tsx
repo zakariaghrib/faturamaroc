@@ -9,6 +9,7 @@ import { AuthProvider } from "./context/AuthContext"
 import { DashboardLayout } from "./components/layout/DashboardLayout"
 import { ProtectedRoute } from "./components/auth/ProtectedRoute"
 import { Login } from "./pages/Login"
+import { Register } from "./pages/Register"
 import { Dashboard } from "./pages/Dashboard"
 import { DocumentsPage } from "./pages/DocumentsPage"
 import { ClientsPage } from "./pages/ClientsPage"
@@ -21,8 +22,9 @@ export const App: React.FC = () => {
     <AuthProvider>
       <Router>
         <Routes>
-          {/* Route publique */}
+          {/* Routes publiques */}
           <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
 
           {/* Routes protégées avec DashboardLayout */}
           <Route

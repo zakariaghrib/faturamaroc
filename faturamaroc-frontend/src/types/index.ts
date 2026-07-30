@@ -96,6 +96,14 @@ export interface LoginRequest {
   password?: string;
 }
 
+export interface RegisterRequest {
+  email: string;
+  motDePasse: string;
+  password?: string;
+  nomComplet: string;
+  role: Role;
+}
+
 export interface AuthResponse {
   token: string;
   type: string;

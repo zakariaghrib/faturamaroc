@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { authService } from "../services/api";
-import type { AuthResponse, LoginRequest, Role } from "../types";
+import type { AuthResponse, LoginRequest, RegisterRequest, Role } from "../types";
 
 interface AuthContextType {
   user: { id: number; email: string; role: Role } | null;
@@ -8,6 +8,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
   role: Role | null;
   login: (credentials: LoginRequest) => Promise<AuthResponse>;
+  register: (data: RegisterRequest) => Promise<AuthResponse>;
   logout: () => void;
   hasRole: (roles: Role[]) => boolean;
 }
@@ -47,6 +48,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     return data;
   };
 
+  const register = async (data: RegisterRequest): Promise<AuthResponse> => {
+    const response = await authService.register(data);
+    const userData = { id: response.id, email: response.email, role: response.role };
+    setToken(response.token);
+    setUser(userData);
+    localStorage.setItem("jwt_token", response.token);
+    localStorage.setItem("auth_user", JSON.stringify(userData));
+    return response;
+  };
+
   const logout = () => {
     setToken(null);
     setUser(null);
@@ -67,6 +78,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         isAuthenticated: !!token && !!user,
         role: user?.role || null,
         login,
+        register,
         logout,
         hasRole,
       }}

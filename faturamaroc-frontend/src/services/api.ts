@@ -4,6 +4,7 @@ import type {
   Client,
   DocumentCommercial,
   LoginRequest,
+  RegisterRequest,
   Paiement,
   Produit,
   Societe,
@@ -47,6 +48,10 @@ api.interceptors.response.use(
 export const authService = {
   login: async (credentials: LoginRequest): Promise<AuthResponse> => {
     const response = await api.post<AuthResponse>("/auth/login", credentials);
+    return response.data;
+  },
+  register: async (data: RegisterRequest): Promise<AuthResponse> => {
+    const response = await api.post<AuthResponse>("/auth/register", data);
     return response.data;
   },
 };

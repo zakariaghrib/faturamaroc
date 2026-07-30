@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, Link } from "react-router-dom"
 import { useAuth } from "../context/AuthContext"
 import {
   Lock,
@@ -177,6 +177,16 @@ export const Login: React.FC = () => {
               </span>
               <span className="text-[10px] text-slate-500">Devis/Fact.</span>
             </Button>
+          </div>
+
+          <div className="w-full text-center mt-3 pt-3 border-t border-slate-100 dark:border-slate-800 text-sm">
+            <span className="text-slate-500 dark:text-slate-400">Pas encore de compte ? </span>
+            <Link
+              to="/register"
+              className="font-semibold text-emerald-600 hover:text-emerald-500 dark:text-emerald-400 underline-offset-4 hover:underline"
+            >
+              S'inscrire gratuitement
+            </Link>
           </div>
         </CardFooter>
       </Card>
