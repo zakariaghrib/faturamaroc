@@ -1,0 +1,46 @@
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: faturamaroc_db
+    environment:
+      POSTGRES_DB: faturamaroc_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: rootpassword
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - faturamaroc-net
+
+  backend:
+    build: ./faturamaroc-backend    
+    container_name: faturamaroc_backend
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/faturamaroc_db
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=rootpassword
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+    depends_on:
+      - postgres
+    networks:
+      - faturamaroc-net
+
+  frontend:
+    build: ./faturamaroc-frontend    
+    container_name: faturamaroc_frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - faturamaroc-net
+
+volumes:
+  postgres_data:
+
+networks:
+  faturamaroc-net:
+    driver: bridge
