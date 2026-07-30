@@ -6,8 +6,11 @@ package com.example.faturamaroc_backend.model.enums;
  */
 public enum StatutFacture {
     BROUILLON,
+    VALIDE,
+    EN_ATTENTE,
     IMPAYEE,
     PARTIELLEMENT_PAYEE,
     PAYEE,
+    RETARD,
     ANNULEE
 }
