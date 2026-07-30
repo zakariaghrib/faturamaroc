@@ -32,7 +32,7 @@ export const Login: React.FC = () => {
     setLoading(true)
 
     try {
-      await login({ email, motDePasse })
+      await login({ email, motDePasse, password: motDePasse })
       navigate("/")
     } catch (err: any) {
       setError(

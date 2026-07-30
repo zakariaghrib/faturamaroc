@@ -1,5 +1,6 @@
 package com.example.faturamaroc_backend.dto.auth;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.example.faturamaroc_backend.model.enums.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -22,6 +23,7 @@ public class RegisterRequest {
 
     @NotBlank(message = "Le mot de passe est obligatoire")
     @Size(min = 6, message = "Le mot de passe doit comporter au moins 6 caractères")
+    @JsonAlias({"motDePasse", "password"})
     private String password;
 
     @NotBlank(message = "Le nom complet est obligatoire")
