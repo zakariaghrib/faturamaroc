@@ -10,6 +10,7 @@ import com.example.faturamaroc_backend.security.CustomUserDetailsService;
 import com.example.faturamaroc_backend.security.JwtAuthenticationFilter;
 import com.example.faturamaroc_backend.security.JwtService;
 import com.example.faturamaroc_backend.service.DocumentCommercialService;
+import com.example.faturamaroc_backend.service.PdfGenerationService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -41,6 +42,9 @@ class DocumentCommercialControllerTest {
 
     @MockBean
     private DocumentCommercialRepository documentRepository;
+
+    @MockBean
+    private PdfGenerationService pdfGenerationService;
 
     @MockBean
     private JwtAuthenticationFilter jwtAuthenticationFilter;
@@ -110,5 +114,16 @@ class DocumentCommercialControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.numero").value("FAC-2026-0001"))
                 .andExpect(jsonPath("$.typeDocument").value("FACTURE"));
+    }
+
+    @Test
+    void testGeneratePdf_ShouldReturn200WithPdfBytes() throws Exception {
+        when(documentService.getDocumentById(100L)).thenReturn(facture);
+        when(pdfGenerationService.genererPdfDocument(100L)).thenReturn(new byte[]{1, 2, 3, 4});
+
+        mockMvc.perform(get("/api/documents/100/pdf"))
+                .andExpect(status().isOk())
+                .andExpect(header().string("Content-Disposition", "inline; filename=\"FACTURE_FAC-2026-0001.pdf\""))
+                .andExpect(content().contentType(MediaType.APPLICATION_PDF));
     }
 }

@@ -47,7 +47,7 @@ public class SecurityConfig {
                         // Enregistrement de règlements réservé aux COMPTABLE & ADMINISTRATEUR
                         .requestMatchers("/api/paiements/**").hasAnyRole("ADMINISTRATEUR", "COMPTABLE")
                         // Gestion commerciale et catalogue
-                        .requestMatchers("/api/documents/**", "/api/clients/**", "/api/produits/**")
+                        .requestMatchers("/api/documents/**", "/api/clients/**", "/api/produits/**", "/api/societe/**")
                             .hasAnyRole("ADMINISTRATEUR", "COMPTABLE", "COMMERCIAL")
                         // Tout autre endpoint nécessite une authentification
                         .anyRequest().authenticated()

@@ -5,14 +5,18 @@ import com.example.faturamaroc_backend.model.enums.StatutFacture;
 import com.example.faturamaroc_backend.model.enums.TypeDocument;
 import com.example.faturamaroc_backend.repository.DocumentCommercialRepository;
 import com.example.faturamaroc_backend.service.DocumentCommercialService;
+import com.example.faturamaroc_backend.service.PdfGenerationService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -29,6 +33,7 @@ public class DocumentCommercialController {
 
     private final DocumentCommercialService documentService;
     private final DocumentCommercialRepository documentRepository;
+    private final PdfGenerationService pdfGenerationService;
 
     @GetMapping
     @Transactional(readOnly = true)
@@ -79,4 +84,17 @@ public class DocumentCommercialController {
         documentRepository.deleteById(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping(value = "/{id}/pdf", produces = MediaType.APPLICATION_PDF_VALUE)
+    @Transactional(readOnly = true)
+    public ResponseEntity<byte[]> generatePdf(@PathVariable Long id) throws IOException {
+        DocumentCommercial doc = documentService.getDocumentById(id);
+        byte[] pdfBytes = pdfGenerationService.genererPdfDocument(id);
+        String filename = doc.getTypeDocument().name() + "_" + doc.getNumero() + ".pdf";
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + filename + "\"")
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(pdfBytes);
+    }
 }
+
