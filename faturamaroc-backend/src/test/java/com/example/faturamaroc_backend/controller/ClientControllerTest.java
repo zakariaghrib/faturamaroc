@@ -3,6 +3,9 @@ package com.example.faturamaroc_backend.controller;
 import com.example.faturamaroc_backend.model.Client;
 import com.example.faturamaroc_backend.model.enums.TypeTiers;
 import com.example.faturamaroc_backend.repository.ClientRepository;
+import com.example.faturamaroc_backend.security.CustomUserDetailsService;
+import com.example.faturamaroc_backend.security.JwtAuthenticationFilter;
+import com.example.faturamaroc_backend.security.JwtService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +32,15 @@ class ClientControllerTest {
 
     @MockBean
     private ClientRepository clientRepository;
+
+    @MockBean
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
+
+    @MockBean
+    private CustomUserDetailsService customUserDetailsService;
+
+    @MockBean
+    private JwtService jwtService;
 
     @Autowired
     private ObjectMapper objectMapper;

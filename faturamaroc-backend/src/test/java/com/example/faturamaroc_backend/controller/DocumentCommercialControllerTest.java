@@ -6,6 +6,9 @@ import com.example.faturamaroc_backend.model.enums.StatutFacture;
 import com.example.faturamaroc_backend.model.enums.TypeDocument;
 import com.example.faturamaroc_backend.model.enums.TypeTiers;
 import com.example.faturamaroc_backend.repository.DocumentCommercialRepository;
+import com.example.faturamaroc_backend.security.CustomUserDetailsService;
+import com.example.faturamaroc_backend.security.JwtAuthenticationFilter;
+import com.example.faturamaroc_backend.security.JwtService;
 import com.example.faturamaroc_backend.service.DocumentCommercialService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -38,6 +41,15 @@ class DocumentCommercialControllerTest {
 
     @MockBean
     private DocumentCommercialRepository documentRepository;
+
+    @MockBean
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
+
+    @MockBean
+    private CustomUserDetailsService customUserDetailsService;
+
+    @MockBean
+    private JwtService jwtService;
 
     @Autowired
     private ObjectMapper objectMapper;
