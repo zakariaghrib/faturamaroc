@@ -3,6 +3,7 @@ package com.example.faturamaroc_backend.config;
 import com.example.faturamaroc_backend.security.CustomUserDetailsService;
 import com.example.faturamaroc_backend.security.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -45,8 +46,9 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        // Points d'entrée publics (authentification & enregistrement)
-                        .requestMatchers("/api/auth/**").permitAll()
+                        // Points d'entrée publics (authentification, enregistrement & gestion des erreurs)
+                        .requestMatchers("/api/auth/**", "/error").permitAll()
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         // Rôles Marocains : Suppression réservée aux ADMINISTRATEUR
                         .requestMatchers(HttpMethod.DELETE, "/api/**").hasRole("ADMINISTRATEUR")
                         // Enregistrement de règlements réservé aux COMPTABLE & ADMINISTRATEUR
@@ -56,6 +58,18 @@ public class SecurityConfig {
                             .hasAnyRole("ADMINISTRATEUR", "COMPTABLE", "COMMERCIAL")
                         // Tout autre endpoint nécessite une authentification
                         .anyRequest().authenticated()
+                )
+                .exceptionHandling(exceptions -> exceptions
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                            response.setContentType("application/json;charset=UTF-8");
+                            response.getWriter().write("{\"status\":401,\"error\":\"Unauthorized\",\"message\":\"Identifiants incorrects. Veuillez vérifier votre email et mot de passe ou utiliser un compte de démonstration.\"}");
+                        })
+                        .accessDeniedHandler((request, response, accessDeniedException) -> {
+                            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                            response.setContentType("application/json;charset=UTF-8");
+                            response.getWriter().write("{\"status\":403,\"error\":\"Forbidden\",\"message\":\"Accès refusé. Vous n'avez pas les autorisations nécessaires pour ce profil.\"}");
+                        })
                 )
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
